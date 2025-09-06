@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Sorteos Interactivos</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Estilos CSS integrados en el HTML -->
+    <style>
+        /* --- Nueva Paleta de colores inspirada en la imagen --- */
+        :root {
+            --color-fondo: #f0f7ff; /* Azul muy claro de fondo */
+            --color-secundario: #ffffff;
+            --color-borde: #d0e0f0;
+            --color-texto: #24305e; /* Azul oscuro para texto */
+            --color-texto-secundario: #6a7f9e;
+            --color-acento: #378de5; /* Azul principal */
+            --color-acento-secundario: #9dd79d; /* Verde */
+            --color-acento-terciario: #f7e79b; /* Amarillo */
+            --color-ganador: #28a745;
+            --color-error: #dc3545;
+        }
+
+        /* --- Estilos generales del cuerpo --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.6;
+        }
+
+        /* --- Barra de Navegación --- */
+        nav {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            border-bottom: 1px solid var(--color-borde);
+        }
+
+        nav a {
+            color: var(--color-texto);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+
+        nav a:hover, nav a.active-link {
+            background-color: var(--color-acento);
+            color: white;
+        }
+
+        /* --- Contenedor principal y secciones --- */
+        .container {
+            max-width: 980px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .main-section {
+            padding: 0;
+            display: none; /* Oculto por defecto */
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            background-color: var(--color-fondo);
+        }
+        .main-section.active {
+            display: block; /* Muestra la sección activa */
+        }
+        
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+        
+        .section-content {
+            position: relative;
+            z-index: 2;
+            padding: 4rem 1.5rem;
+        }
+
+        #inicio {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 450px;
+            background: linear-gradient(135deg, #a8d0e6, #c9e2f5); /* Fallback */
+        }
+        
+        #inicio .section-content {
+            background-color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            padding: 2.5rem;
+            border-radius: 12px;
+        }
+
+        h1, h2, h3 {
+            color: var(--color-texto);
+            margin-bottom: 1.5rem;
+        }
+        h1 {
+            font-size: 3.2rem;
+            text-align: center;
+            letter-spacing: -1px;
+            color: var(--color-texto);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #inicio p {
+            font-size: 1.2rem;
+            color: var(--color-texto-secundario);
+        }
+        h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            padding-bottom: 1rem;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--color-borde);
+        }
+        h3 {
+            font-size: 1.6rem;
+            color: var(--color-acento);
+        }
+        p {
+            color: var(--color-texto-secundario);
+            margin-bottom: 1rem;
+        }
+
+        /* --- SELECCIÓN DE HERRAMIENTAS --- */
+        .tool-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        .tool-card {
+            background-color: var(--color-secundario);
+            border: 1px solid var(--color-borde);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .tool-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--color-acento);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .tool-card.active {
+            border-color: var(--color-acento);
+            box-shadow: 0 0 15px rgba(55, 141, 229, 0.3);
+        }
+        .tool-card svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1rem;
+            color: var(--color-acento);
+        }
+        .tool-card span {
+            display: block;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* --- Estilos de las Herramientas --- */
+        .tool-container {
+            display: none; /* Ocultas por defecto */
+            background-color: var(--color-secundario);
+            padding: 2.5rem;
+            border-radius: 16px;
+            margin-bottom: 3rem;
+            border: 1px solid var(--color-borde);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .tool-container.active {
+            display: block; /* Se muestra la activa */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-texto);
+        }
+
+        textarea, input[type="number"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--color-borde);
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        textarea:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--color-acento);
+            box-shadow: 0 0 0 3px rgba(55, 141, 229, 0.2);
+        }
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        /* --- Grupo de botones de acción --- */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .action-buttons button {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            background-color: var(--color-fondo);
+            color: var(--color-texto-secundario);
+            border: 1px solid var(--color-borde);
+            border-radius: 8px;
+        }
+        .action-buttons button:hover:not(:disabled) {
+            background-color: var(--color-borde);
+            color: var(--color-texto);
+        }
+
+        button {
+            display: inline-block;
+            background-color: var(--color-acento);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        button:disabled {
+            background-color: var(--color-borde);
+            cursor: not-allowed;
+            color: var(--color-texto-secundario);
+        }
+        button:hover:not(:disabled) {
+            background-color: var(--color-acento-hover);
+            transform: translateY(-2px);
+        }
+        button:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+        button.secondary {
+             background-color: var(--color-secundario);
+             color: var(--color-acento);
+             border: 1px solid var(--color-borde);
+        }
+        button.secondary:hover {
+            background-color: var(--color-fondo);
+        }
+        
+        /* --- TEMAS DE COLOR --- */
+        .theme-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .theme-selector label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--color-borde);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .theme-selector input[type="radio"] {
+            display: none;
+        }
+        .theme-selector input[type="radio"]:checked + label {
+            border-color: var(--color-acento);
+            background-color: var(--color-fondo);
+        }
+        .theme-selector .swatch {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .split-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .split-layout {
+                flex-direction: row;
+            }
+        }
+        .split-layout > div {
+            flex: 1;
+        }
+
+        /* --- HERRAMIENTA 2: SORTEO EQUIPOS --- */
+        #team-results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .team-result-card {
+            background-color: var(--color-fondo);
+            padding: 1.5rem;
+            border: 1px solid var(--color-borde);
+            border-radius: 12px;
+        }
+        .team-result-card h4 {
+            color: var(--color-acento);
+        }
+        .team-result-card .selected-member {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--color-ganador);
+            min-height: 28px;
+            display: inline-block;
+        }
+        .team-result-card ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--color-texto-secundario);
+        }
+        .team-result-card .resortear-btn {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* --- MODALES --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-content {
+            background-color: var(--color-secundario);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--color-borde);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            display: none; /* Oculto por defecto */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .modal-overlay.show .modal-content.visible {
+            display: block;
+        }
+        .modal-content h4 {
+            font-size: 1.5rem;
+            color: var(--color-texto);
+            margin-bottom: 1rem;
+        }
+        .modal-buttons {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        #modal-winners-list, #history-content {
+            list-style-type: none;
+            padding: 0;
+            max-height: 250px;
+            overflow-y: auto;
+            background-color: var(--color-fondo);
+            border-radius: 10px;
+            border: 1px solid var(--color-borde);
+            text-align: left;
+        }
+        #modal-winners-list li, #history-content li {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--color-borde);
+        }
+        #modal-winners-list li:last-child, #history-content li:last-child {
+            border-bottom: none;
+        }
+        #history-content .history-item {
+            border-bottom: 1px solid var(--color-borde);
+            padding: 0.75rem;
+        }
+        #history-content .history-item:last-child { border-bottom: none; }
+        #history-content .history-item strong { color: var(--color-acento); }
+        #history-content .history-item small { color: var(--color-texto-secundario); display: block; font-size: 0.8rem;}
+        
+        #modal-animation-container {
+            display: none;
+            padding: 2rem;
+            background-color: var(--color-secundario);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        #modal-animation-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--color-acento-hover);
+            display: block;
+            min-height: 50px;
+        }
+
+        /* --- Pie de página --- */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            color: var(--color-texto-secundario);
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="active-link" onclick="showSection('inicio', event, this)">Inicio</a>
+        <a href="#" onclick="showSection('servicios', event, this)">Servicios</a>
+        <a href="#" onclick="showSection('acerca', event, this)">Acerca de</a>
+        <a href="#" onclick="showSection('contacto', event, this)">Contacto</a>
+    </nav>
+
+    <div class="container">
+        
+        <section id="inicio" class="main-section active">
+            <!--
+              IMAGEN DE FONDO: Inserta la ruta de tu imagen en el atributo src="".
+              Puedes usar una ruta local (ej: "mi_imagen.jpg"), una URL de internet,
+              o pegar directamente el código de una imagen en formato Base64.
+              Ejemplo Base64: src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."
+            -->
+            <img src="https://img.pikbest.com/backgrounds/20190817/lucky-draw-turntable-background_1901775.jpg!bw700" class="background-image">
+            <div class="section-content">
+                <h1>Sorteos Educativos para Todos</h1>
+                <p>Tu plataforma interactiva para sortear en el Aula. ¡Comienza ahora!</p>
+            </div>
+        </section>
+
+        <section id="servicios" class="main-section">
+            <img src="https://png.pngtree.com/background/20210710/original/pngtree-thanksgiving-give-back-anniversary-poster-background-material-picture-image_1023311.jpg" alt="Imagen de fondo para servicios" class="background-image">
+            <div class="section-content">
+                <h2 style="color:white;">Nuestras Herramientas</h2>
+                
+
+                <p style="color:white;" "text-align:center; max-width: 1800px; margin: -2rem auto 5rem;">Selecciona una herramienta para comenzar tu sorteo.</p>
+
+                <div class="tool-selection">
+                    <div class="tool-card active" onclick="showTool('tool1')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/><path d="m15 5 3 3"/></svg>
+                        <span>Sorteo Rápido</span>
+                    </div>
+                    <div class="tool-card" onclick="showTool('tool2')">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span>Sortear Equipos y elegir un integrante</span>
+                    </div>
+                    <div class="tool-card" onclick="showTool('tool3')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                        <span>Múltiples Ganadores</span>
+                    </div>
+                     <div class="tool-card" onclick="showTool('tool4')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                        <span>Sorteo de Premios</span>
+                    </div>
+                </div>
+
+                <!-- Herramienta 1: Sorteo Simple -->
+                <div id="tool1" class="tool-container active">
+                    <h3>1. Sorteo Rápido de Lista</h3>
+                    <label for="listaSorteoSimple">Participantes (uno por línea):</label>
+                    <div class="action-buttons">
+                        <button onclick="limpiarDatos('listaSorteoSimple')">Limpiar</button>
+                        <button onclick="mezclarDatos('listaSorteoSimple')">Mezclar</button>
+                        <button onclick="ordenarDatos('listaSorteoSimple', 'asc')">Ordenar A-Z</button>
+                        <button onclick="ordenarDatos('listaSorteoSimple', 'desc')">Ordenar Z-A</button>
+                        <button onclick="mostrarHistorial(1)">Ver Historial</button>
+                    </div>
+                    <textarea id="listaSorteoSimple" placeholder="Ej:&#10;Ana Pérez&#10;Carlos Solís&#10;Sofía Castro"></textarea>
+                    
+                    <label>Elige un tema de color para la animación:</label>
+                    <div class="theme-selector">
+                        <input type="radio" id="theme-classic-1" name="theme-tool1" value="classic" checked>
+                        <label for="theme-classic-1"><span class="swatch" style="background-color: #378de5;"></span> Clásico</label>
+                        <input type="radio" id="theme-ocean-1" name="theme-tool1" value="ocean"><label for="theme-ocean-1"><span class="swatch" style="background-color: #0077b6;"></span> Océano</label>
+                        <input type="radio" id="theme-forest-1" name="theme-tool1" value="forest"><label for="theme-forest-1"><span class="swatch" style="background-color: #2d6a4f;"></span> Bosque</label>
+                        <input type="radio" id="theme-fire-1" name="theme-tool1" value="fire"><label for="theme-fire-1"><span class="swatch" style="background-color: #dc2f02;"></span> Fuego</label>
+                        <input type="radio" id="theme-neon-1" name="theme-tool1" value="neon"><label for="theme-neon-1"><span class="swatch" style="background-color: #ff00f5;"></span> Neón</label>
+                    </div>
+
+                    <button id="tool1-btn" onclick="realizarSorteoSimple()">¡Sortear Ahora!</button>
+                </div>
+
+                <!-- Herramienta 2: Ruleta de Equipos y Miembros -->
+                <div id="tool2" class="tool-container">
+                    <h3>2. Sorteo Doble: Equipos y Miembros</h3>
+                    <label for="numEquipos">¿Cuántos equipos son?</label>
+                    <input type="number" id="numEquipos" min="1" placeholder="Ej: 3">
+                    <div class="action-buttons">
+                        <button onclick="limpiarDatosTool2()">Limpiar Todo</button>
+                        <button onclick="mostrarHistorial(2)">Ver Historial</button>
+                    </div>
+                    <button onclick="generarCamposEquipos()">Generar Espacios para Equipos</button>
+                    <div id="camposEquipos" style="margin-top: 1.5rem;"></div>
+                    
+                    <label>Elige un tema de color para la animación:</label>
+                    <div class="theme-selector">
+                        <input type="radio" id="theme-classic-2" name="theme-tool2" value="classic" checked>
+                        <label for="theme-classic-2"><span class="swatch" style="background-color: #378de5;"></span> Clásico</label>
+                        <input type="radio" id="theme-ocean-2" name="theme-tool2" value="ocean"><label for="theme-ocean-2"><span class="swatch" style="background-color: #0077b6;"></span> Océano</label>
+                        <input type="radio" id="theme-forest-2" name="theme-tool2" value="forest"><label for="theme-forest-2"><span class="swatch" style="background-color: #2d6a4f;"></span> Bosque</label>
+                        <input type="radio" id="theme-fire-2" name="theme-tool2" value="fire"><label for="theme-fire-2"><span class="swatch" style="background-color: #dc2f02;"></span> Fuego</label>
+                        <input type="radio" id="theme-neon-2" name="theme-tool2" value="neon"><label for="theme-neon-2"><span class="swatch" style="background-color: #ff00f5;"></span> Neón</label>
+                    </div>
+
+                    <div id="botonSorteoEquipos" style="display:none; margin-top: 1rem;">
+                        <button id="tool2-btn" onclick="sortearEquiposYMiembros()">¡Realizar Sorteo Completo!</button>
+                    </div>
+                    <div class="result-box" id="team-draw-results" style="display:none;">
+                         <h4>Orden de Equipos Sorteado</h4>
+                         <ol id="team-order-list"></ol>
+                         <hr style="border-color: var(--color-borde); margin: 1.5rem 0;">
+                         <h4>Miembros Seleccionados por Equipo</h4>
+                         <div id="team-results-container"></div>
+                    </div>
+                </div>
+
+                <!-- Herramienta 3: Sorteo Múltiple -->
+                <div id="tool3" class="tool-container">
+                    <h3>3. Sorteo con Múltiples Ganadores</h3>
+                    <label for="listaSorteoMultiple">Lista completa de participantes (uno por línea):</label>
+                     <div class="action-buttons">
+                        <button onclick="limpiarDatos('listaSorteoMultiple')">Limpiar</button>
+                        <button onclick="mezclarDatos('listaSorteoMultiple')">Mezclar</button>
+                        <button onclick="ordenarDatos('listaSorteoMultiple', 'asc')">Ordenar A-Z</button>
+                        <button onclick="ordenarDatos('listaSorteoMultiple', 'desc')">Ordenar Z-A</button>
+                        <button onclick="mostrarHistorial(3)">Ver Historial</button>
+                    </div>
+                    <textarea id="listaSorteoMultiple" placeholder="Ingresa a todos los participantes aquí..."></textarea>
+                    <label for="cantidadGanadores">Número de ganadores a seleccionar:</label>
+                    <input type="number" id="cantidadGanadores" min="1" placeholder="Ej: 5">
+
+                    <label>Elige un tema de color para la animación:</label>
+                    <div class="theme-selector">
+                        <input type="radio" id="theme-classic-3" name="theme-tool3" value="classic" checked>
+                        <label for="theme-classic-3"><span class="swatch" style="background-color: #378de5;"></span> Clásico</label>
+                        <input type="radio" id="theme-ocean-3" name="theme-tool3" value="ocean"><label for="theme-ocean-3"><span class="swatch" style="background-color: #0077b6;"></span> Océano</label>
+                        <input type="radio" id="theme-forest-3" name="theme-tool3" value="forest"><label for="theme-forest-3"><span class="swatch" style="background-color: #2d6a4f;"></span> Bosque</label>
+                        <input type="radio" id="theme-fire-3" name="theme-tool3" value="fire"><label for="theme-fire-3"><span class="swatch" style="background-color: #dc2f02;"></span> Fuego</label>
+                        <input type="radio" id="theme-neon-3" name="theme-tool3" value="neon"><label for="theme-neon-3"><span class="swatch" style="background-color: #ff00f5;"></span> Neón</label>
+                    </div>
+
+                    <button id="tool3-btn" onclick="realizarSorteoMultiple()">¡Seleccionar Ganadores!</button>
+                </div>
+                
+                 <!-- Herramienta 4: Sorteo de Premios -->
+                <div id="tool4" class="tool-container">
+                    <h3>4. Sorteo de Premios</h3>
+                    <div class="split-layout">
+                        <div>
+                            <label for="listaSorteoPremios">Participantes (uno por línea):</label>
+                            <div class="action-buttons">
+                                <button onclick="limpiarDatos('listaSorteoPremios')">Limpiar</button>
+                                <button onclick="mezclarDatos('listaSorteoPremios')">Mezclar</button>
+                                <button onclick="ordenarDatos('listaSorteoPremios', 'asc')">A-Z</button>
+                            </div>
+                            <textarea id="listaSorteoPremios" placeholder="Participante 1&#10;Participante 2"></textarea>
+                        </div>
+                        <div>
+                            <label for="listaPremios">Premios (uno por línea):</label>
+                             <div class="action-buttons">
+                                <button onclick="limpiarDatos('listaPremios')">Limpiar</button>
+                                <button onclick="mezclarDatos('listaPremios')">Mezclar</button>
+                                <button onclick="ordenarDatos('listaPremios', 'asc')">A-Z</button>
+                            </div>
+                            <textarea id="listaPremios" placeholder="Premio 1&#10;Premio 2"></textarea>
+                        </div>
+                    </div>
+                     <div class="action-buttons">
+                        <button onclick="mostrarHistorial(4)">Ver Historial</button>
+                    </div>
+                    
+                    <label>Elige un tema de color para la animación:</label>
+                    <div class="theme-selector">
+                        <input type="radio" id="theme-classic-4" name="theme-tool4" value="classic" checked>
+                        <label for="theme-classic-4"><span class="swatch" style="background-color: #378de5;"></span> Clásico</label>
+                        <input type="radio" id="theme-ocean-4" name="theme-tool4" value="ocean"><label for="theme-ocean-4"><span class="swatch" style="background-color: #0077b6;"></span> Océano</label>
+                        <input type="radio" id="theme-forest-4" name="theme-tool4" value="forest"><label for="theme-forest-4"><span class="swatch" style="background-color: #2d6a4f;"></span> Bosque</label>
+                        <input type="radio" id="theme-fire-4" name="theme-tool4" value="fire"><label for="theme-fire-4"><span class="swatch" style="background-color: #dc2f02;"></span> Fuego</label>
+                        <input type="radio" id="theme-neon-4" name="theme-tool4" value="neon"><label for="theme-neon-4"><span class="swatch" style="background-color: #ff00f5;"></span> Neón</label>
+                    </div>
+                    
+                    <button id="tool4-btn" onclick="realizarSorteoPremios()">¡Sortear Premios!</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="acerca" class="main-section">
+            <img src="https://www.shutterstock.com/image-photo/happy-couple-young-family-flat-600nw-1746359534.jpg" class="background-image"> 
+            <div class="section-content">
+                <h2 style="color:yellow;">Acerca de Nosotros</h2>
+                <p style="color:white;">Somos una plataforma dedicada a ofrecer herramientas digitales sencillas y potentes para la realización de sorteos y selecciones aleatorias. Nuestro objetivo es proporcionar soluciones transparentes y fáciles de usar para eventos, equipos de trabajo, y cualquier situación que requiera una elección al azar.</p>
+            </div>
+        </section>
+
+        <section id="contacto" class="main-section">
+            
+            <div class="section-content">
+                <h2>By Raul J. Garcia Graos</h2>
+                <p><strong>Email:</strong> <a href="mailto:raul.joel.g@gmail.com" style="color: var(--color-acento);">raul.joel.g@gmail.com</a></p>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Modal Genérico para Sorteos -->
+    <div class="modal-overlay" id="main-modal">
+        <div id="modal-animation-container">
+             <h4 id="modal-animation-title">Seleccionando Ganador...</h4>
+             <span id="modal-animation-text"></span>
+        </div>
+        <div class="modal-content" id="modal-content">
+            <h4 id="modal-title">¡Tenemos un ganador!</h4>
+            <div id="modal-winners-list"></div>
+            <div class="modal-buttons">
+                <button class="secondary" id="modal-keep-btn">Mantener en lista</button>
+                <button id="modal-remove-btn">Eliminar de lista</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para Historial -->
+    <div class="modal-overlay" id="history-modal">
+        <div class="modal-content visible">
+            <h4 id="history-title">Historial de Sorteos</h4>
+            <div id="history-content"></div>
+            <div class="modal-buttons">
+                <button onclick="document.getElementById('history-modal').classList.remove('show')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <footer>
+        <p>&copy; 2025 Plataforma de Sorteos Interactivos. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        // --- LÓGICA GENERAL Y DE UI ---
+        const mainModal = document.getElementById('main-modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalTitle = document.getElementById('modal-title');
+        const modalWinnersList = document.getElementById('modal-winners-list');
+        const modalAnimationContainer = document.getElementById('modal-animation-container');
+        const modalAnimationText = document.getElementById('modal-animation-text');
+        const modalAnimationTitle = document.getElementById('modal-animation-title');
+        const historyModal = document.getElementById('history-modal');
+        const historyTitle = document.getElementById('history-title');
+        const historyContent = document.getElementById('history-content');
+        
+        let currentAction = { remove: null, keep: null };
+        let historyTool1 = [], historyTool2 = [], historyTool3 = [], historyTool4 = [];
+
+        function showSection(sectionId, event, clickedLink) {
+            event.preventDefault(); // Evita que el enlace # se añada a la URL
+            
+            // Ocultar todas las secciones principales
+            document.querySelectorAll('.main-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+
+            // Actualizar el estado activo en la navegación
+            document.querySelectorAll('nav a').forEach(link => {
+                link.classList.remove('active-link');
+            });
+            clickedLink.classList.add('active-link');
+        }
+
+        function showTool(toolId) {
+            document.querySelectorAll('.tool-container').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('active'));
+            document.getElementById(toolId).classList.add('active');
+            document.querySelector(`.tool-card[onclick="showTool('${toolId}')"]`).classList.add('active');
+        }
+        
+        document.getElementById('modal-keep-btn').addEventListener('click', () => {
+            if (currentAction.keep) currentAction.keep();
+            mainModal.classList.remove('show');
+        });
+        
+        document.getElementById('modal-remove-btn').addEventListener('click', () => {
+            if (currentAction.remove) currentAction.remove();
+            mainModal.classList.remove('show');
+        });
+
+        // --- LÓGICA DE GESTIÓN DE DATOS ---
+        function limpiarDatos(textareaId) {
+            document.getElementById(textareaId).value = '';
+        }
+
+        function limpiarDatosTool2() {
+            const numEquiposInput = document.getElementById('numEquipos');
+            numEquiposInput.value = '';
+            document.getElementById('camposEquipos').innerHTML = '';
+            document.getElementById('botonSorteoEquipos').style.display = 'none';
+            document.getElementById('team-draw-results').style.display = 'none';
+        }
+
+        function mezclarDatos(textareaId) {
+            const textarea = document.getElementById(textareaId);
+            let lines = textarea.value.split('\n').filter(line => line.trim() !== '');
+            for (let i = lines.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [lines[i], lines[j]] = [lines[j], lines[i]];
+            }
+            textarea.value = lines.join('\n');
+        }
+        
+        function ordenarDatos(textareaId, direction) {
+            const textarea = document.getElementById(textareaId);
+            let lines = textarea.value.split('\n').filter(line => line.trim() !== '');
+            lines.sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
+            if (direction === 'desc') {
+                lines.reverse();
+            }
+            textarea.value = lines.join('\n');
+        }
+
+        function mostrarHistorial(toolNumber) {
+            let historyData;
+            let contentHTML = '';
+            
+            switch(toolNumber) {
+                case 1:
+                    historyTitle.textContent = 'Historial de Sorteo Rápido';
+                    historyData = historyTool1;
+                    if (historyData.length === 0) {
+                        contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
+                    } else {
+                        historyData.forEach(item => {
+                            contentHTML += `<div class="history-item"><small>${item.timestamp}</small><strong>Ganador:</strong> ${item.winner}</div>`;
+                        });
+                    }
+                    break;
+                case 2:
+                    historyTitle.textContent = 'Historial de Sorteo de Equipos';
+                    historyData = historyTool2;
+                     if (historyData.length === 0) {
+                        contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
+                    } else {
+                        historyData.forEach(item => {
+                            let membersList = Object.entries(item.selected).map(([team, member]) => `<li>${team}: ${member}</li>`).join('');
+                            contentHTML += `<div class="history-item">
+                                <small>${item.timestamp}</small>
+                                <strong>Orden de equipos:</strong> ${item.order.join(', ')}<br>
+                                <strong>Seleccionados:</strong> <ul>${membersList}</ul>
+                            </div>`;
+                        });
+                    }
+                    break;
+                case 3:
+                     historyTitle.textContent = 'Historial de Múltiples Ganadores';
+                    historyData = historyTool3;
+                    if (historyData.length === 0) {
+                        contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
+                    } else {
+                        historyData.forEach(item => {
+                            contentHTML += `<div class="history-item"><small>${item.timestamp}</small><strong>Ganadores:</strong> ${item.winners.join(', ')}</div>`;
+                        });
+                    }
+                    break;
+                case 4:
+                     historyTitle.textContent = 'Historial de Sorteo de Premios';
+                    historyData = historyTool4;
+                    if (historyData.length === 0) {
+                        contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
+                    } else {
+                        historyData.forEach(item => {
+                             let winnersList = item.winners.map(w => `<li>${w.winner} - <strong>${w.prize}</strong></li>`).join('');
+                            contentHTML += `<div class="history-item"><small>${item.timestamp}</small><strong>Ganadores:</strong> <ul>${winnersList}</ul></div>`;
+                        });
+                    }
+                    break;
+            }
+            historyContent.innerHTML = contentHTML;
+            historyModal.classList.add('show');
+        }
+
+
+        // --- LÓGICA DE ANIMACIONES Y SORTEOS ---
+        const colorPalettes = {
+            classic: ["#378de5", "#9dd79d", "#f7e79b", "#f4a261", "#e76f51"],
+            ocean: ['#0077b6', '#00b4d8', '#90e0ef', '#caf0f8', '#03045e'],
+            forest: ['#2d6a4f', '#40916c', '#52b788', '#74c69d', '#95d5b2'],
+            fire: ['#d00000', '#dc2f02', '#e85d04', '#f48c06', '#faa307'],
+            neon: ['#ff00f5', '#00f2ff', '#00ff00', '#f1fa3c', '#ff0055']
+        };
+
+        // --- HERRAMIENTA 1: SORTEO SIMPLE ---
+        function realizarSorteoSimple() {
+             const btn = document.getElementById('tool1-btn');
+            const listaInput = document.getElementById('listaSorteoSimple');
+            let participantes = listaInput.value.split('\n').map(p => p.trim()).filter(p => p !== '');
+            if (participantes.length < 1) {
+                alert("Por favor, ingresa al menos un participante.");
+                return;
+            }
+            btn.disabled = true;
+
+            const ganador = participantes[Math.floor(Math.random() * participantes.length)];
+
+            modalContent.classList.remove('visible');
+            modalAnimationContainer.style.display = 'block';
+            mainModal.classList.add('show');
+            
+            const selectedTheme = document.querySelector('input[name="theme-tool1"]:checked').value;
+            const palette = colorPalettes[selectedTheme];
+            let colorIndex = 0;
+            const animationDuration = 4000;
+            const intervalTime = 70;
+
+            modalAnimationTitle.textContent = "Seleccionando Ganador...";
+            let animationInterval = setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * participantes.length);
+                modalAnimationText.textContent = participantes[randomIndex];
+                modalAnimationText.style.color = palette[colorIndex];
+                colorIndex = (colorIndex + 1) % palette.length;
+            }, intervalTime);
+
+            setTimeout(() => {
+                clearInterval(animationInterval);
+                modalAnimationContainer.style.display = 'none';
+                modalAnimationText.style.color = 'var(--color-acento-hover)';
+                
+                historyTool1.unshift({ winner: ganador, timestamp: new Date().toLocaleString() });
+                if (historyTool1.length > 10) historyTool1.pop();
+
+                modalTitle.textContent = `¡Felicidades al ganador!`;
+                modalWinnersList.innerHTML = `<li>${ganador}</li>`;
+                modalContent.classList.add('visible');
+                
+                currentAction.remove = () => {
+                    const newParticipants = participantes.filter(p => p !== ganador);
+                    listaInput.value = newParticipants.join('\n');
+                    btn.disabled = false;
+                };
+                currentAction.keep = () => { btn.disabled = false; };
+            }, animationDuration);
+        }
+
+        // --- HERRAMIENTA 2: EQUIPOS ---
+        function generarCamposEquipos() {
+             const numEquipos = parseInt(document.getElementById('numEquipos').value);
+            const camposDiv = document.getElementById('camposEquipos');
+            const botonSorteo = document.getElementById('botonSorteoEquipos');
+            if (isNaN(numEquipos) || numEquipos < 1) {
+                camposDiv.innerHTML = `<p style='color: var(--color-error);'>Ingresa un número válido de equipos.</p>`;
+                botonSorteo.style.display = 'none';
+                return;
+            }
+            let html = '';
+            for (let i = 1; i <= numEquipos; i++) {
+                html += `<div><label for="equipo${i}">Integrantes del Equipo ${i} (uno por línea):</label><textarea id="equipo${i}" placeholder="Miembros del equipo ${i}..."></textarea></div>`;
+            }
+            camposDiv.innerHTML = html;
+            botonSorteo.style.display = 'block';
+        }
+
+        function animateMemberSelection(memberList, displayElement, colorPalette, callback) {
+            if (memberList.length === 0) {
+                displayElement.textContent = 'N/A';
+                displayElement.style.color = 'var(--color-texto-secundario)';
+                if (callback) callback('N/A');
+                return;
+            }
+            const animationDuration = 2000;
+            const intervalTime = 50;
+            let animationInterval = setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * memberList.length);
+                displayElement.textContent = memberList[randomIndex];
+                displayElement.style.color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+            }, intervalTime);
+
+            setTimeout(() => {
+                clearInterval(animationInterval);
+                const winner = memberList[Math.floor(Math.random() * memberList.length)];
+                displayElement.textContent = winner;
+                displayElement.style.color = 'var(--color-ganador)';
+                if (callback) callback(winner);
+            }, animationDuration);
+        }
+
+        async function sortearEquiposYMiembros() {
+            const btn = document.getElementById('tool2-btn');
+            btn.disabled = true;
+            const numEquipos = parseInt(document.getElementById('numEquipos').value);
+            const resultsContainer = document.getElementById('team-draw-results');
+            const teamOrderList = document.getElementById('team-order-list');
+            const teamResultsContainer = document.getElementById('team-results-container');
+            
+            resultsContainer.style.display = 'block';
+            teamOrderList.innerHTML = 'Sorteando orden...';
+            teamResultsContainer.innerHTML = '';
+
+            let equipos = Array.from({ length: numEquipos }, (_, i) => `Equipo ${i + 1}`);
+            for (let i = equipos.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [equipos[i], equipos[j]] = [equipos[j], equipos[i]];
+            }
+            teamOrderList.innerHTML = equipos.map(e => `<li>${e}</li>`).join('');
+
+            const selectedTheme = document.querySelector('input[name="theme-tool2"]:checked').value;
+            const palette = colorPalettes[selectedTheme];
+            let selectedMembers = {};
+
+            for (let i = 1; i <= numEquipos; i++) {
+                const integrantes = document.getElementById(`equipo${i}`).value.split('\n').map(p => p.trim()).filter(p => p !== '');
+                
+                const resultCard = document.createElement('div');
+                resultCard.className = 'team-result-card';
+                resultCard.id = `team-result-${i}`;
+                resultCard.innerHTML = `<h4 style="color: ${palette[(i - 1) % palette.length]}">Equipo ${i}</h4>
+                    <p>Seleccionado: <span class="selected-member">...</span></p>
+                    <button class="resortear-btn" onclick="resortearMiembro(${i})">Volver a sortear</button>
+                    <hr style="border-color: var(--color-borde); margin: 0.5rem 0;">
+                    <p>Lista original:</p>
+                    <ul>${integrantes.map(m => `<li>- ${m}</li>`).join('') || '<li>Lista vacía</li>'}</ul>`;
+                teamResultsContainer.appendChild(resultCard);
+
+                await new Promise(resolve => {
+                    const memberSpan = resultCard.querySelector('.selected-member');
+                    animateMemberSelection(integrantes, memberSpan, palette, (winner) => {
+                        selectedMembers[`Equipo ${i}`] = winner;
+                        resolve();
+                    });
+                });
+            }
+            historyTool2.unshift({ order: equipos, selected: selectedMembers, timestamp: new Date().toLocaleString() });
+            if (historyTool2.length > 10) historyTool2.pop();
+
+            btn.disabled = false;
+        }
+
+        function resortearMiembro(equipoIndex) {
+            const integrantes = document.getElementById(`equipo${equipoIndex}`).value.split('\n').map(p => p.trim()).filter(p => p !== '');
+            const memberSpan = document.querySelector(`#team-result-${equipoIndex} .selected-member`);
+            const selectedTheme = document.querySelector('input[name="theme-tool2"]:checked').value;
+            const palette = colorPalettes[selectedTheme];
+            if(integrantes.length > 0) {
+                 animateMemberSelection(integrantes, memberSpan, palette);
+            } else {
+                alert(`El Equipo ${equipoIndex} no tiene miembros para sortear.`);
+            }
+        }
+
+        // --- HERRAMIENTA 3: MÚLTIPLES GANADORES ---
+        function realizarSorteoMultiple() {
+            const btn = document.getElementById('tool3-btn');
+            const listaInput = document.getElementById('listaSorteoMultiple');
+            const cantidadInput = document.getElementById('cantidadGanadores');
+            let participantes = listaInput.value.split('\n').map(p => p.trim()).filter(p => p !== '');
+            let cantidadGanadores = parseInt(cantidadInput.value);
+
+            if (participantes.length < 1 || isNaN(cantidadGanadores) || cantidadGanadores < 1 || cantidadGanadores > participantes.length) {
+                alert("Por favor, verifica los datos. Asegúrate de tener suficientes participantes y una cantidad válida de ganadores.");
+                return;
+            }
+            btn.disabled = true;
+
+            const shuffled = [...participantes].sort(() => 0.5 - Math.random());
+            const ganadores = shuffled.slice(0, cantidadGanadores);
+
+            modalContent.classList.remove('visible');
+            modalAnimationContainer.style.display = 'block';
+            mainModal.classList.add('show');
+            
+            const selectedTheme = document.querySelector('input[name="theme-tool3"]:checked').value;
+            const palette = colorPalettes[selectedTheme];
+            let colorIndex = 0;
+            const animationDuration = 4000;
+            const intervalTime = 70;
+            modalAnimationTitle.textContent = "Seleccionando Ganadores...";
+            let animationInterval = setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * participantes.length);
+                modalAnimationText.textContent = participantes[randomIndex];
+                modalAnimationText.style.color = palette[colorIndex];
+                colorIndex = (colorIndex + 1) % palette.length;
+            }, intervalTime);
+
+            setTimeout(() => {
+                clearInterval(animationInterval);
+                modalAnimationContainer.style.display = 'none';
+                modalAnimationText.style.color = 'var(--color-acento-hover)';
+                
+                historyTool3.unshift({ winners: ganadores, timestamp: new Date().toLocaleString() });
+                if (historyTool3.length > 10) historyTool3.pop();
+
+                modalTitle.textContent = `¡Felicidades a los ${cantidadGanadores} ganadores!`;
+                modalWinnersList.innerHTML = ganadores.map(g => `<li>${g}</li>`).join('');
+                modalContent.classList.add('visible');
+                
+                currentAction.remove = () => {
+                    const noGanadores = participantes.filter(p => !ganadores.includes(p));
+                    listaInput.value = noGanadores.join('\n');
+                    btn.disabled = false;
+                };
+                currentAction.keep = () => { btn.disabled = false; };
+            }, animationDuration);
+        }
+        
+        // --- HERRAMIENTA 4: SORTEO DE PREMIOS ---
+         function realizarSorteoPremios() {
+            const btn = document.getElementById('tool4-btn');
+            const listaParticipantes = document.getElementById('listaSorteoPremios');
+            const listaPremios = document.getElementById('listaPremios');
+            
+            let participantes = listaParticipantes.value.split('\n').map(p => p.trim()).filter(p => p !== '');
+            let premios = listaPremios.value.split('\n').map(p => p.trim()).filter(p => p !== '');
+
+            if (participantes.length === 0 || premios.length === 0) {
+                alert("Por favor, ingresa al menos un participante y un premio.");
+                return;
+            }
+            btn.disabled = true;
+
+            const shuffledParticipantes = [...participantes].sort(() => 0.5 - Math.random());
+            const results = [];
+            const winnersSet = new Set();
+            
+            for(let i = 0; i < premios.length; i++) {
+                // If there are more prizes than participants, participants can win multiple times.
+                const winner = shuffledParticipantes[i % shuffledParticipantes.length];
+                results.push({ prize: premios[i], winner: winner });
+                winnersSet.add(winner);
+            }
+
+            modalContent.classList.remove('visible');
+            modalAnimationContainer.style.display = 'block';
+            mainModal.classList.add('show');
+            
+            const selectedTheme = document.querySelector('input[name="theme-tool4"]:checked').value;
+            const palette = colorPalettes[selectedTheme];
+            let colorIndex = 0;
+            const animationDuration = 4000;
+            const intervalTime = 70;
+            modalAnimationTitle.textContent = "Asignando Premios...";
+            let animationInterval = setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * participantes.length);
+                modalAnimationText.textContent = participantes[randomIndex];
+                modalAnimationText.style.color = palette[colorIndex];
+                colorIndex = (colorIndex + 1) % palette.length;
+            }, intervalTime);
+
+            setTimeout(() => {
+                clearInterval(animationInterval);
+                modalAnimationContainer.style.display = 'none';
+                modalAnimationText.style.color = 'var(--color-acento-hover)';
+                
+                historyTool4.unshift({ winners: results, timestamp: new Date().toLocaleString() });
+                if (historyTool4.length > 10) historyTool4.pop();
+
+                modalTitle.textContent = `¡Resultados del Sorteo!`;
+                modalWinnersList.innerHTML = results.map(r => `<li>${r.winner} - <strong>${r.prize}</strong></li>`).join('');
+                modalContent.classList.add('visible');
+                
+                currentAction.remove = () => {
+                    const noGanadores = participantes.filter(p => !winnersSet.has(p));
+                    listaParticipantes.value = noGanadores.join('\n');
+                    btn.disabled = false;
+                };
+                currentAction.keep = () => { btn.disabled = false; };
+            }, animationDuration);
+        }
+
+    </script>
+</body>
+</html>
+
