@@ -334,20 +334,20 @@
             flex: 1;
         }
 
-        /* --- HERRAMIENTA 2: SORTEO EQUIPOS --- */
-        #team-results-container {
+        /* --- HERRAMIENTA 2 Y 5: SORTEO EQUIPOS / GRUPOS --- */
+        #team-results-container, #group-results-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-top: 1.5rem;
         }
-        .team-result-card {
+        .team-result-card, .group-card {
             background-color: var(--color-fondo);
             padding: 1.5rem;
             border: 1px solid var(--color-borde);
             border-radius: 12px;
         }
-        .team-result-card h4 {
+        .team-result-card h4, .group-card h4 {
             color: var(--color-acento);
         }
         .team-result-card .selected-member {
@@ -357,12 +357,15 @@
             min-height: 28px;
             display: inline-block;
         }
-        .team-result-card ul {
+        .team-result-card ul, .group-card ul {
             list-style-type: none;
             padding: 0;
             margin: 0.5rem 0;
             font-size: 0.9rem;
             color: var(--color-texto-secundario);
+        }
+        .group-card ul li strong {
+            color: var(--color-ganador);
         }
         .team-result-card .resortear-btn {
             font-size: 0.8rem;
@@ -485,20 +488,19 @@
               o pegar directamente el código de una imagen en formato Base64.
               Ejemplo Base64: src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."
             -->
-            <img src="https://img.pikbest.com/backgrounds/20190817/lucky-draw-turntable-background_1901775.jpg!bw700" class="background-image">
+          <img src="https://img.pikbest.com/backgrounds/20190817/lucky-draw-turntable-background_1901775.jpg!bw700" class="background-image">
             <div class="section-content">
                 <h1>Sorteos Educativos para Todos</h1>
                 <p>Tu plataforma interactiva para sortear en el Aula. ¡Comienza ahora!</p>
             </div>
         </section>
 
-        <section id="servicios" class="main-section">
+<section id="servicios" class="main-section">
             <img src="https://png.pngtree.com/background/20210710/original/pngtree-thanksgiving-give-back-anniversary-poster-background-material-picture-image_1023311.jpg" alt="Imagen de fondo para servicios" class="background-image">
             <div class="section-content">
                 <h2 style="color:white;">Nuestras Herramientas</h2>
-                
 
-                <p style="color:white;" "text-align:center; max-width: 1800px; margin: -2rem auto 5rem;">Selecciona una herramienta para comenzar tu sorteo.</p>
+                <p style="text-align:center; max-width: 600px; margin: -2rem auto 3rem;">Selecciona una herramienta para comenzar tu sorteo.</p>
 
                 <div class="tool-selection">
                     <div class="tool-card active" onclick="showTool('tool1')">
@@ -507,7 +509,7 @@
                     </div>
                     <div class="tool-card" onclick="showTool('tool2')">
                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        <span>Sortear Equipos y elegir un integrante</span>
+                        <span>Sorteo de Equipos</span>
                     </div>
                     <div class="tool-card" onclick="showTool('tool3')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
@@ -516,6 +518,10 @@
                      <div class="tool-card" onclick="showTool('tool4')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
                         <span>Sorteo de Premios</span>
+                    </div>
+                    <div class="tool-card" onclick="showTool('tool5')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span>Agrupar Alumnos</span>
                     </div>
                 </div>
 
@@ -646,6 +652,43 @@
                     
                     <button id="tool4-btn" onclick="realizarSorteoPremios()">¡Sortear Premios!</button>
                 </div>
+                
+                <!-- Herramienta 5: Agrupar Alumnos -->
+                <div id="tool5" class="tool-container">
+                    <h3>5. Agrupador de Alumnos Aleatorio</h3>
+                    <label for="listaAlumnos">Lista de Alumnos (uno por línea):</label>
+                    <div class="action-buttons">
+                        <button onclick="limpiarDatos('listaAlumnos')">Limpiar</button>
+                        <button onclick="mezclarDatos('listaAlumnos')">Mezclar</button>
+                        <button onclick="mostrarHistorial(5)">Ver Historial</button>
+                    </div>
+                    <textarea id="listaAlumnos" placeholder="Alumno 1&#10;Alumno 2&#10;Alumno 3..."></textarea>
+                    
+                    <label>¿Cómo deseas agrupar?</label>
+                    <div class="theme-selector">
+                        <input type="radio" id="group-by-groups" name="grouping-mode" value="byGroups" checked>
+                        <label for="group-by-groups">Por número de grupos</label>
+                        <input type="radio" id="group-by-members" name="grouping-mode" value="byMembers">
+                        <label for="group-by-members">Por integrantes por grupo</label>
+                    </div>
+
+                    
+                    <input type="number" id="grouping-value" min="1" placeholder="Ej: 4">
+
+                    <div class="theme-selector" style="margin-bottom: 1.5rem;">
+                         <input type="checkbox" id="sortearCoordinador" checked>
+                         <label for="sortearCoordinador">Sortear un coordinador por grupo</label>
+                    </div>
+                    
+                    <input type="number" id="grouping-value" min="1" placeholder="Ej: 4">
+                    
+                    <button id="tool5-btn" onclick="realizarAgrupamiento()">¡Agrupar Alumnos!</button>
+
+                    <div class="result-box" id="group-draw-results" style="display:none;">
+                         <h4>Grupos Creados</h4>
+                         <div id="group-results-container"></div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -657,11 +700,12 @@
             </div>
         </section>
 
+
         <section id="contacto" class="main-section">
-            
+            <img src="" alt="Imagen de fondo para contacto" class="background-image">
             <div class="section-content">
-                <h2>By Raul J. Garcia Graos</h2>
-                <p><strong>Email:</strong> <a href="mailto:raul.joel.g@gmail.com" style="color: var(--color-acento);">raul.joel.g@gmail.com</a></p>
+                <h2>Contacto</h2>
+                <p><strong>Email:</strong> <a href="mailto:contacto@sorteosdigitales.com" style="color: var(--color-acento);">contacto@sorteosdigitales.com</a></p>
             </div>
         </section>
     </div>
@@ -712,20 +756,14 @@
         const historyContent = document.getElementById('history-content');
         
         let currentAction = { remove: null, keep: null };
-        let historyTool1 = [], historyTool2 = [], historyTool3 = [], historyTool4 = [];
+        let historyTool1 = [], historyTool2 = [], historyTool3 = [], historyTool4 = [], historyTool5 = [];
 
         function showSection(sectionId, event, clickedLink) {
-            event.preventDefault(); // Evita que el enlace # se añada a la URL
-            
-            // Ocultar todas las secciones principales
+            event.preventDefault();
             document.querySelectorAll('.main-section').forEach(section => {
                 section.classList.remove('active');
             });
-
-            // Mostrar la sección seleccionada
             document.getElementById(sectionId).classList.add('active');
-
-            // Actualizar el estado activo en la navegación
             document.querySelectorAll('nav a').forEach(link => {
                 link.classList.remove('active-link');
             });
@@ -755,8 +793,7 @@
         }
 
         function limpiarDatosTool2() {
-            const numEquiposInput = document.getElementById('numEquipos');
-            numEquiposInput.value = '';
+            document.getElementById('numEquipos').value = '';
             document.getElementById('camposEquipos').innerHTML = '';
             document.getElementById('botonSorteoEquipos').style.display = 'none';
             document.getElementById('team-draw-results').style.display = 'none';
@@ -790,58 +827,37 @@
                 case 1:
                     historyTitle.textContent = 'Historial de Sorteo Rápido';
                     historyData = historyTool1;
-                    if (historyData.length === 0) {
-                        contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
-                    } else {
-                        historyData.forEach(item => {
-                            contentHTML += `<div class="history-item"><small>${item.timestamp}</small><strong>Ganador:</strong> ${item.winner}</div>`;
-                        });
-                    }
+                    if (historyData.length === 0) contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
+                    else historyData.forEach(item => { contentHTML += `<div class="history-item"><small>${item.timestamp}</small><strong>Ganador:</strong> ${item.winner}</div>`; });
                     break;
                 case 2:
                     historyTitle.textContent = 'Historial de Sorteo de Equipos';
                     historyData = historyTool2;
-                     if (historyData.length === 0) {
-                        contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
-                    } else {
-                        historyData.forEach(item => {
-                            let membersList = Object.entries(item.selected).map(([team, member]) => `<li>${team}: ${member}</li>`).join('');
-                            contentHTML += `<div class="history-item">
-                                <small>${item.timestamp}</small>
-                                <strong>Orden de equipos:</strong> ${item.order.join(', ')}<br>
-                                <strong>Seleccionados:</strong> <ul>${membersList}</ul>
-                            </div>`;
-                        });
-                    }
+                    if (historyData.length === 0) contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
+                    else historyData.forEach(item => { let membersList = Object.entries(item.selected).map(([team, member]) => `<li>${team}: ${member}</li>`).join(''); contentHTML += `<div class="history-item"><small>${item.timestamp}</small><strong>Orden de equipos:</strong> ${item.order.join(', ')}<br><strong>Seleccionados:</strong> <ul>${membersList}</ul></div>`; });
                     break;
                 case 3:
-                     historyTitle.textContent = 'Historial de Múltiples Ganadores';
+                    historyTitle.textContent = 'Historial de Múltiples Ganadores';
                     historyData = historyTool3;
-                    if (historyData.length === 0) {
-                        contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
-                    } else {
-                        historyData.forEach(item => {
-                            contentHTML += `<div class="history-item"><small>${item.timestamp}</small><strong>Ganadores:</strong> ${item.winners.join(', ')}</div>`;
-                        });
-                    }
+                    if (historyData.length === 0) contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
+                    else historyData.forEach(item => { contentHTML += `<div class="history-item"><small>${item.timestamp}</small><strong>Ganadores:</strong> ${item.winners.join(', ')}</div>`; });
                     break;
                 case 4:
-                     historyTitle.textContent = 'Historial de Sorteo de Premios';
+                    historyTitle.textContent = 'Historial de Sorteo de Premios';
                     historyData = historyTool4;
-                    if (historyData.length === 0) {
-                        contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
-                    } else {
-                        historyData.forEach(item => {
-                             let winnersList = item.winners.map(w => `<li>${w.winner} - <strong>${w.prize}</strong></li>`).join('');
-                            contentHTML += `<div class="history-item"><small>${item.timestamp}</small><strong>Ganadores:</strong> <ul>${winnersList}</ul></div>`;
-                        });
-                    }
+                    if (historyData.length === 0) contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
+                    else historyData.forEach(item => { let winnersList = item.winners.map(w => `<li>${w.winner} - <strong>${w.prize}</strong></li>`).join(''); contentHTML += `<div class="history-item"><small>${item.timestamp}</small><strong>Ganadores:</strong> <ul>${winnersList}</ul></div>`; });
+                    break;
+                case 5:
+                    historyTitle.textContent = 'Historial de Agrupaciones';
+                    historyData = historyTool5;
+                    if (historyData.length === 0) contentHTML = '<div class="history-item">No hay resultados guardados.</div>';
+                    else historyData.forEach(item => { let groupsList = item.groups.map((group, index) => `<div><strong>Grupo ${index + 1}:</strong><ul>${group.members.map(m => `<li>${m === group.coordinator ? `<strong>${m} (Coord.)</strong>` : m}</li>`).join('')}</ul></div>`).join(''); contentHTML += `<div class="history-item"><small>${item.timestamp}</small>${groupsList}</div>`; });
                     break;
             }
             historyContent.innerHTML = contentHTML;
             historyModal.classList.add('show');
         }
-
 
         // --- LÓGICA DE ANIMACIONES Y SORTEOS ---
         const colorPalettes = {
@@ -1127,8 +1143,89 @@
                 currentAction.keep = () => { btn.disabled = false; };
             }, animationDuration);
         }
+        
+        // --- HERRAMIENTA 5: AGRUPAR ALUMNOS ---
+        function realizarAgrupamiento() {
+            const btn = document.getElementById('tool5-btn');
+            const listaInput = document.getElementById('listaAlumnos');
+            let alumnos = listaInput.value.split('\n').map(p => p.trim()).filter(p => p !== '');
+            const mode = document.querySelector('input[name="grouping-mode"]:checked').value;
+            const value = parseInt(document.getElementById('grouping-value').value);
+            const resultsContainer = document.getElementById('group-draw-results');
+            const groupResultsContainer = document.getElementById('group-results-container');
+
+            if (alumnos.length < 2 || isNaN(value) || value < 1) {
+                alert("Por favor, ingresa una lista de alumnos y un valor numérico válido.");
+                return;
+            }
+            btn.disabled = true;
+            
+            const shuffledAlumnos = [...alumnos].sort(() => 0.5 - Math.random());
+            let groups = [];
+            let numGroups = 0;
+
+            if (mode === 'byGroups') {
+                if (value > alumnos.length) { alert("No puedes crear más grupos que alumnos."); btn.disabled = false; return; }
+                numGroups = value;
+                for (let i = 0; i < numGroups; i++) groups.push([]);
+                shuffledAlumnos.forEach((alumno, index) => { groups[index % numGroups].push(alumno); });
+            } else { // byMembers
+                if (value > alumnos.length) { alert("El tamaño del grupo no puede ser mayor que el total de alumnos."); btn.disabled = false; return; }
+                numGroups = Math.ceil(alumnos.length / value);
+                 for (let i = 0; i < numGroups; i++) groups.push([]);
+                 shuffledAlumnos.forEach((alumno, index) => { groups[Math.floor(index / value)].push(alumno); });
+            }
+
+            const finalGroups = groups.map(group => {
+                if (group.length > 0) {
+                    const coordinator = group[Math.floor(Math.random() * group.length)];
+                    return { members: group, coordinator: coordinator };
+                }
+                return null;
+            }).filter(Boolean); // Eliminar grupos vacíos si los hubiera
+            
+            // Animación
+            modalContent.classList.remove('visible');
+            modalAnimationContainer.style.display = 'block';
+            mainModal.classList.add('show');
+            const animationDuration = 3000;
+            const intervalTime = 70;
+            modalAnimationTitle.textContent = "Creando Grupos...";
+            let animationInterval = setInterval(() => {
+                modalAnimationText.textContent = alumnos[Math.floor(Math.random() * alumnos.length)];
+            }, intervalTime);
+
+            setTimeout(() => {
+                clearInterval(animationInterval);
+                mainModal.classList.remove('show');
+
+                // Mostrar resultados
+                groupResultsContainer.innerHTML = '';
+                finalGroups.forEach((group, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'group-card';
+                    let membersHTML = '<ul>';
+                    group.members.forEach(member => {
+                        if (member === group.coordinator) {
+                            membersHTML += `<li><strong>${member} (Coordinador)</strong></li>`;
+                        } else {
+                            membersHTML += `<li>${member}</li>`;
+                        }
+                    });
+                    membersHTML += '</ul>';
+                    card.innerHTML = `<h4>Grupo ${index + 1}</h4>${membersHTML}`;
+                    groupResultsContainer.appendChild(card);
+                });
+
+                historyTool5.unshift({ groups: finalGroups, timestamp: new Date().toLocaleString() });
+                if (historyTool5.length > 10) historyTool5.pop();
+
+                resultsContainer.style.display = 'block';
+                btn.disabled = false;
+
+            }, animationDuration);
+        }
 
     </script>
 </body>
 </html>
-
